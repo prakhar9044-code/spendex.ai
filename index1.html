@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spendex AI | Intelligent Finance</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body class="theme-blue">
+
+    <div id="login-screen" class="d-flex justify-content-center align-items-center vh-100 w-100 position-fixed top-0 start-0 z-3 bg-fade">
+        <div class="glass-card p-5 shadow-lg text-center" style="max-width: 400px; width: 90%;">
+            <div class="icon-box bg-gradient-primary text-white mx-auto mb-3 shadow" style="width:70px; height:70px; font-size:30px;">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h2 class="fw-bold text-gradient mb-2">Spendex AI</h2>
+            <p class="text-muted small mb-4">Intelligent Financial Management</p>
+            
+            <form id="login-form">
+                <div class="mb-3 text-start">
+                    <label class="small fw-bold text-muted mb-1">Email</label>
+                    <input type="email" class="form-control glass-input" value="admin@spendex.ai" required>
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="small fw-bold text-muted mb-1">Password</label>
+                    <input type="password" class="form-control glass-input" value="password123" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm hover-scale">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-app" class="d-none">
+        
+        <div id="loader" class="loader-overlay d-none">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container" style="z-index: 1060;"></div>
+
+        <nav class="sidebar glass-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="logo-icon bg-gradient-primary text-white"><i class="fa-solid fa-bolt"></i></div>
+                    <h4 class="mb-0 fw-bold tracking-tight text-gradient">Spendex</h4>
+                </div>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active-nav">
+                    <a href="#" onclick="switchView('dashboard')"><i class="fa-solid fa-layer-group"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchView('financial-health')"><i class="fa-solid fa-heart-pulse"></i> Financial Health</a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchView('employees')"><i class="fa-solid fa-users-gear"></i> Payroll & HR</a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchView('expenses')"><i class="fa-solid fa-receipt"></i> Expenses</a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchView('predictions')"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Insights</a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchView('settings')"><i class="fa-solid fa-gear"></i> Settings</a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile glass-card p-2 mb-3 d-flex align-items-center gap-2">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" id="profile-avatar" class="rounded-circle" width="35">
+                    <div class="lh-1">
+                        <small class="fw-bold d-block" id="sidebar-user-name">Loading...</small>
+                        <small class="text-muted" style="font-size: 10px;">PRO PLAN</small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted fw-bold">Dark Mode</small>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                    </div>
+                </div>
+                <div class="mt-3 text-center">
+                    <button class="btn btn-sm btn-outline-danger w-100" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <div id="content">
+            <nav class="navbar navbar-expand-lg d-md-none glass-navbar mb-4">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <span class="ms-auto fw-bold text-gradient">Spendex AI</span>
+            </nav>
+
+            <section id="dashboard" class="view-section active-view">
+                <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="fw-bold">Financial Overview</h2>
+                        <p class="text-muted mb-0">Real-time cash flow & AI projections.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-glass shadow-sm hover-scale" onclick="switchView('expenses')"><i class="fa-solid fa-plus text-primary"></i> Expense</button>
+                        <button class="btn btn-primary shadow-lg hover-scale" onclick="exportReport()"><i class="fa-solid fa-file-export"></i> Export PDF</button>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4" id="stats-row">
+                    <div class="col-md-3">
+                        <div class="card glass-card h-100 border-0 stat-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px;">Total Spend (Mo)</span>
+                                    <div class="icon-box bg-soft-blue"><i class="fa-solid fa-wallet text-primary"></i></div>
+                                </div>
+                                <h3 class="fw-bold stat-value" id="dash-total-expenses">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card glass-card h-100 border-0 stat-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px;">Payroll Run</span>
+                                    <div class="icon-box bg-soft-purple"><i class="fa-solid fa-people-group text-purple"></i></div>
+                                </div>
+                                <h3 class="fw-bold stat-value" id="dash-payroll">$0</h3>
+                                <small class="text-muted"><span id="dash-emp-count">0</span> Active Employees</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card glass-card h-100 border-0 stat-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px;">Runway</span>
+                                    <div class="icon-box bg-soft-green"><i class="fa-solid fa-plane-departure text-success"></i></div>
+                                </div>
+                                <h3 class="fw-bold stat-value" id="dash-runway">--</h3>
+                                <small class="text-success small">Based on cash reserves</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card glass-card h-100 border-0 position-relative overflow-hidden stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px;">Health Score</span>
+                                    <h2 class="fw-bold mb-0 mt-1 stat-value" id="dash-health">0</h2>
+                                </div>
+                                <div style="width: 80px; height: 80px;">
+                                    <canvas id="healthGaugeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 export-capture">
+                    <div class="col-lg-8">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-4">Cash Flow & Burn Projections</h5>
+                                <div style="height: 300px;">
+                                    <canvas id="cashFlowChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-4">Expense Distribution</h5>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="expensePieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="financial-health" class="view-section d-none">
+                <h2 class="fw-bold mb-4">Financial Health & Metrics</h2>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card glass-card border-0">
+                            <div class="card-body">
+                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Debt to Equity Ratio</h6>
+                                <h3 class="fw-bold text-warning" id="metric-debt-ratio">0.0</h3>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" id="bar-debt-ratio" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card glass-card border-0">
+                            <div class="card-body">
+                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Est. Profit Margin</h6>
+                                <h3 class="fw-bold text-success" id="metric-profit-margin">0%</h3>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-success" id="bar-profit-margin" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card glass-card border-0">
+                            <div class="card-body">
+                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Current Cash Reserves</h6>
+                                <h3 class="fw-bold text-primary" id="metric-cash-reserves">$0</h3>
+                                <small class="text-muted">Target: $100k</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card glass-card border-0">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-4">30-Day Liquidity Trend</h5>
+                        <div style="height: 300px;">
+                            <canvas id="liquidityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="employees" class="view-section d-none">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold">Payroll Management</h2>
+                    <button class="btn btn-primary shadow-lg hover-scale" onclick="openEmpModal()">
+                        <i class="fa-solid fa-plus me-2"></i>Add Employee
+                    </button>
+                </div>
+                <div class="card glass-card border-0">
+                    <div class="card-body p-0">
+                        <div class="p-3">
+                            <input type="text" id="emp-search" class="form-control glass-input" placeholder="Search employees...">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 custom-table">
+                                <thead class="bg-light text-muted small text-uppercase">
+                                    <tr>
+                                        <th class="ps-4">Employee</th>
+                                        <th>Role</th>
+                                        <th>Base Salary</th>
+                                        <th>Bonus/Tax</th>
+                                        <th>Net Pay</th>
+                                        <th class="text-end pe-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="emp-table-body">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="expenses" class="view-section d-none">
+                <h2 class="fw-bold mb-4">Expense Tracking</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card glass-card border-0 sticky-top" style="top: 20px; z-index: 1;">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-3"><i class="fa-solid fa-wand-magic-sparkles text-primary me-2"></i>Smart Entry</h5>
+                                <form id="expense-form">
+                                    <div class="mb-3">
+                                        <label class="small text-muted fw-bold">DESCRIPTION</label>
+                                        <input type="text" class="form-control glass-input" id="exp-desc" placeholder="e.g. 'Software license'" required autocomplete="off">
+                                        <div id="ai-suggestion" class="badge bg-soft-blue text-primary mt-2 fade-in d-none">
+                                            <i class="fa-solid fa-robot"></i> Suggested: <span id="ai-cat-text">Software</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small text-muted fw-bold">AMOUNT</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text glass-input border-end-0" id="currency-symbol">$</span>
+                                            <input type="number" class="form-control glass-input border-start-0" id="exp-amount" placeholder="0.00" required>
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="small text-muted fw-bold">DATE</label>
+                                            <input type="date" class="form-control glass-input" id="exp-date" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="small text-muted fw-bold">CATEGORY</label>
+                                            <select class="form-select glass-input" id="exp-category">
+                                                <option value="Operational">Operational</option>
+                                                <option value="Marketing">Marketing</option>
+                                                <option value="Software">Software</option>
+                                                <option value="Travel">Travel</option>
+                                                <option value="Meals">Meals</option>
+                                                <option value="Rent">Rent</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 shadow-sm hover-scale">Log Expense <i class="fa-solid fa-paper-plane ms-2"></i></button>
+                                </form>
+                                
+                                <div class="mt-4 pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="fw-bold text-muted">MONTHLY BUDGET</small>
+                                        <small class="fw-bold" id="budget-display">$0 / $0</small>
+                                    </div>
+                                    <div class="progress mt-2 glass-progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" id="budget-bar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-danger d-none mt-1 d-block fw-bold" id="budget-warning"><i class="fa-solid fa-triangle-exclamation"></i> Alert: Approaching or Exceeding Budget!</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card glass-card border-0">
+                            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">Transactions</h5>
+                                <small class="text-muted"><i class="fa-solid fa-info-circle"></i> Drag rows to re-order</small>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0 custom-table">
+                                        <thead class="bg-light small text-muted">
+                                            <tr>
+                                                <th width="5%"></th>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th>Category</th>
+                                                <th class="text-end">Amount</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="expense-list-body">
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="predictions" class="view-section d-none">
+                <h2 class="fw-bold mb-4">AI Insights & Simulation</h2>
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="card border-0 bg-gradient-dark text-white shadow-lg overflow-hidden position-relative hover-scale" style="transition: 0.3s">
+                            <div class="card-body p-4 position-relative" style="z-index: 2;">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-box bg-white text-primary rounded-circle shadow">
+                                        <i class="fa-solid fa-sparkles"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold text-white">Insight of the Moment</h5>
+                                        <p class="mb-0 fs-5 text-white" id="ai-insight-text">Awaiting data...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="position-absolute top-0 end-0 bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; margin-right: -50px; margin-top: -50px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-header bg-transparent border-0">
+                                <h5 class="fw-bold"><i class="fa-solid fa-sliders me-2"></i>Scenario Simulator</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="d-flex justify-content-between fw-bold mb-2"><span>New Hires</span><span class="text-primary" id="sim-hires-val">0</span></label>
+                                    <input type="range" class="form-range custom-range" min="0" max="10" value="0" id="sim-hires">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="d-flex justify-content-between fw-bold mb-2"><span>Salary Increase</span><span class="text-primary" id="sim-salary-val">0%</span></label>
+                                    <input type="range" class="form-range custom-range" min="0" max="20" value="0" id="sim-salary">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="d-flex justify-content-between fw-bold mb-2"><span>Marketing Bump</span><span class="text-primary" id="sim-marketing-val">+$0</span></label>
+                                    <input type="range" class="form-range custom-range" min="0" max="10000" step="500" value="0" id="sim-marketing">
+                                </div>
+
+                                <div class="alert bg-soft-blue border-0 d-flex justify-content-between align-items-center mt-4 glass-card">
+                                    <div>
+                                        <small class="text-uppercase text-muted fw-bold">Projected Burn</small>
+                                        <h3 class="fw-bold mb-0 text-primary" id="sim-result-burn">$0</h3>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-uppercase text-muted fw-bold">New Runway</small>
+                                        <h3 class="fw-bold mb-0" id="sim-result-runway">--</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-header bg-transparent border-0">
+                                <h5 class="fw-bold text-danger"><i class="fa-solid fa-fingerprint me-2"></i>Anomaly Detection</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="anomaly-list" class="d-flex flex-column gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="view-section d-none">
+                <h2 class="fw-bold mb-4">Application Settings</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-4"><i class="fa-solid fa-user me-2"></i>Profile Settings</h5>
+                                <form id="profile-form">
+                                    <div class="mb-3">
+                                        <label class="small text-muted fw-bold">Company / User Name</label>
+                                        <input type="text" class="form-control glass-input" id="set-name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small text-muted fw-bold">Email Address</label>
+                                        <input type="email" class="form-control glass-input" id="set-email" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 hover-scale">Save Profile</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-4"><i class="fa-solid fa-sliders me-2"></i>System Preferences</h5>
+                                <form id="preferences-form">
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-6">
+                                            <label class="small text-muted fw-bold">Monthly Budget Limit</label>
+                                            <input type="number" class="form-control glass-input" id="set-budget" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="small text-muted fw-bold">Currency</label>
+                                            <select class="form-select glass-input" id="set-currency">
+                                                <option value="$">USD ($)</option>
+                                                <option value="€">EUR (€)</option>
+                                                <option value="£">GBP (£)</option>
+                                                <option value="₹">INR (₹)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="small text-muted fw-bold mb-2 d-block">Color Theme</label>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn rounded-circle theme-btn" style="background-color: #3b82f6; width: 30px; height: 30px;" onclick="ThemeManager.setPrimary('theme-blue')"></button>
+                                            <button type="button" class="btn rounded-circle theme-btn" style="background-color: #10b981; width: 30px; height: 30px;" onclick="ThemeManager.setPrimary('theme-green')"></button>
+                                            <button type="button" class="btn rounded-circle theme-btn" style="background-color: #8b5cf6; width: 30px; height: 30px;" onclick="ThemeManager.setPrimary('theme-purple')"></button>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch mb-4">
+                                        <input class="form-check-input" type="checkbox" id="set-notifications">
+                                        <label class="form-check-label fw-medium">Enable Budget Alerts (Toasts)</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 hover-scale">Update Preferences</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="modal fade" id="empModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border-0 shadow-lg">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold text-dark">Employee Details</h5>
+                    <button type="button" class="btn-close dark-mode-invert" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="emp-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Full Name</label>
+                                <input type="text" class="form-control glass-input" id="emp-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Role</label>
+                                <input type="text" class="form-control glass-input" id="emp-role" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Email</label>
+                                <input type="email" class="form-control glass-input" id="emp-email" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Join Date</label>
+                                <input type="date" class="form-control glass-input" id="emp-join" required>
+                            </div>
+                            <div class="col-md-12"><hr class="text-muted opacity-25"></div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Base Salary</label>
+                                <input type="number" class="form-control glass-input" id="emp-base" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Bonus %</label>
+                                <input type="number" class="form-control glass-input" id="emp-bonus" value="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Tax %</label>
+                                <input type="number" class="form-control glass-input" id="emp-tax" value="20">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-4 shadow-lg hover-scale">Save Employee</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
+
+    <script src="script1.js"></script>
+</body>
+</html>
