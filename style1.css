@@ -17,6 +17,12 @@ body {
     --card-bg: rgba(255, 255, 255, 0.65);
     --border-color: rgba(255, 255, 255, 0.5);
     --input-bg: rgba(255, 255, 255, 0.5);
+    
+    font-family: 'Inter', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-main);
+    overflow-x: hidden;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 /* Color Themes */
@@ -31,18 +37,6 @@ body.theme-green {
 body.theme-purple {
     --brand-primary: #8b5cf6;
     --brand-secondary: #ec4899;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--primary-bg);
-    color: var(--text-main);
-    overflow-x: hidden;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-}
-
-.bg-fade {
-    background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(59, 130, 246, 0.1) 100%);
 }
 
 /* Apply Bootstrap Button Colors */
@@ -86,6 +80,20 @@ body {
     border-color: var(--brand-primary);
 }
 
+/* Input Group Fixes for Password Eye Icon */
+.input-group .glass-input {
+    border-radius: 8px;
+}
+.input-group .glass-input.border-end-0 {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.input-group .glass-input.border-start-0 {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: transparent;
+}
+
 /* Typography & Utilities */
 .text-gradient {
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
@@ -94,6 +102,7 @@ body {
 }
 .text-primary { color: var(--brand-primary) !important; }
 .bg-primary { background-color: var(--brand-primary) !important; }
+.text-main { color: var(--text-main) !important; }
 
 .icon-box {
     width: 42px;
@@ -175,9 +184,8 @@ body {
 .custom-table tbody tr:hover { background: rgba(150, 150, 150, 0.05) !important; }
 .custom-table td { background: transparent !important; color: var(--text-main); }
 
-
 /* ========================================================= */
-/* 🌙  DARK MODE OVERRIDES (FIXES THE TEXT VISIBILITY) 🌙  */
+/* 🌙 DARK MODE OVERRIDES (FIXES THE TEXT VISIBILITY)        */
 /* ========================================================= */
 body.dark-mode {
     --primary-bg: #0f172a;
@@ -191,15 +199,7 @@ body.dark-mode {
     --input-bg: rgba(15, 23, 42, 0.6);
 }
 
-/* Overriding Bootstrap's dark text forcefully so it shows up bright in dark mode */
-body.dark-mode h1, 
-body.dark-mode h2, 
-body.dark-mode h3, 
-body.dark-mode h4, 
-body.dark-mode h5, 
-body.dark-mode p, 
-body.dark-mode span,
-body.dark-mode label {
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode p, body.dark-mode span, body.dark-mode label {
     color: var(--text-main) !important;
 }
 
@@ -208,14 +208,240 @@ body.dark-mode .text-dark { color: #ffffff !important; }
 body.dark-mode .stat-value { color: #ffffff !important; }
 
 body.dark-mode .form-control::placeholder { color: #94a3b8; }
-body.dark-mode .form-select { color: var(--text-main); }
+body.dark-mode .form-select { color: var(--text-main); background-color: var(--input-bg); border-color: var(--border-color); }
 body.dark-mode .form-select option { background: var(--sidebar-bg); color: var(--text-main); }
 body.dark-mode .modal-content { background: var(--card-bg); color: var(--text-main); }
 body.dark-mode .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+body.dark-mode .dark-mode-invert { filter: invert(1) grayscale(100%) brightness(200%); }
 
 /* Mobile */
 @media (max-width: 768px) {
     .sidebar { margin-left: -260px; }
     .sidebar.active { margin-left: 0; }
     #content { margin-left: 0; padding: 20px; }
+}
+
+/* ========================================================= */
+/* 🚀 LOGIN ANIMATIONS & SHAPES                              */
+/* ========================================================= */
+.bg-fade {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(59, 130, 246, 0.1) 100%);
+}
+
+.pulse-glow {
+    animation: pulseGlow 2s infinite alternate;
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+    100% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.9); transform: scale(1.05); }
+}
+
+.cursor-pointer { cursor: pointer; }
+
+/* ========================================================= */
+/* 🌓 ANIMATED MODE TOGGLE BUTTON                            */
+/* ========================================================= */
+.mode-toggle-container {
+    cursor: pointer;
+    width: 54px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mode-toggle-track {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+
+.mode-toggle-thumb {
+    position: absolute;
+    top: 2px; 
+    left: 2px;
+    width: 22px; 
+    height: 22px;
+    background: var(--brand-primary);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.mode-icon-sun, .mode-icon-moon {
+    position: absolute;
+    font-size: 12px;
+    transition: all 0.4s ease;
+}
+
+.mode-icon-sun { color: #fde047; opacity: 1; transform: rotate(0deg); }
+.mode-icon-moon { color: #f8fafc; opacity: 0; transform: rotate(-90deg); }
+
+/* Toggle State When Dark Mode is Active */
+body.dark-mode .mode-toggle-container {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+body.dark-mode .mode-toggle-thumb {
+    left: calc(100% - 26px);
+    background: var(--brand-secondary);
+}
+body.dark-mode .mode-icon-sun { opacity: 0; transform: rotate(90deg); }
+body.dark-mode .mode-icon-moon { opacity: 1; transform: rotate(0deg); }
+
+/* ========================================================= */
+/* 🤖 CHATBOT UI                                             */
+/* ========================================================= */
+.chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    border: none;
+    font-size: 28px;
+    z-index: 1050;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-window {
+    position: fixed;
+    bottom: 110px;
+    right: 30px;
+    width: 360px;
+    height: 500px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    background: var(--card-bg);
+}
+
+.chat-body {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+.chat-bubble.bot {
+    background: rgba(150,150,150,0.1);
+    color: var(--text-main);
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+}
+.chat-bubble.user {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+}
+.dark-mode .chat-footer { background: var(--sidebar-bg) !important; }
+
+/* ========================================================= */
+/* 📋 KANBAN BOARD & AUDIT STYLES                            */
+/* ========================================================= */
+.kanban-dropzone {
+    min-height: 400px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    padding: 10px;
+}
+.dark-mode .kanban-dropzone { background: rgba(255,255,255,0.02); }
+
+.kanban-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: grab;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.kanban-card:active { cursor: grabbing; }
+
+.audit-item {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--text-main);
+    padding: 15px 20px;
+    transition: background 0.2s;
+}
+.audit-item:hover { background: rgba(150,150,150,0.05); }
+
+/* ========================================================= */
+/* 📸 OCR SCANNER ANIMATION                                  */
+/* ========================================================= */
+.ocr-scan-line {
+    width: 100%;
+    height: 3px;
+    background: var(--brand-primary);
+    box-shadow: 0 0 10px var(--brand-primary);
+    position: absolute;
+    top: 0;
+    animation: scanDown 1.5s infinite linear;
+}
+@keyframes scanDown {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* ========================================================= */
+/* 🏢 WORKSPACE SWITCHER STYLING                             */
+/* ========================================================= */
+.workspace-selector-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2px;
+    transition: all 0.3s ease;
+}
+.workspace-selector-container:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+.custom-select-style {
+    border: none !important;
+    background-color: transparent !important;
+    color: var(--text-main) !important;
+    padding: 8px 12px !important;
+    font-size: 0.95rem !important;
+    cursor: pointer;
+    box-shadow: none !important;
+    outline: none;
+}
+.custom-select-style option {
+    background-color: var(--sidebar-bg);
+    color: var(--text-main);
 }
